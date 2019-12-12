@@ -3,7 +3,11 @@ const databass = require('../data/da-config.js')
 module.exports = {
     find,
     findById,
-    findSteps
+    findSteps,
+    add,
+    addStep,
+    update,
+    remove
 }
 
 function find(){
@@ -20,4 +24,27 @@ function findSteps(id){
         .join('schemes', 'steps.scheme_id', 'schemes.id')
         .where('schemes.id', id)
 
+}
+
+function add(data) {
+
+    return databass('schemes').insert(data, 'id')
+    .then( ids => {
+        const [id] = ids;
+
+        return findById(id);
+    })
+}
+
+function addStep(data){
+    return databass('steps').insert(data, 'id')
+    .then(ids => ({ id: ids[0] }))
+}
+
+function update(change, id){
+    return databass('schemes').where('id', Number(id)).update(change)
+}
+
+function remove(id){
+    return databass('schemes').where('id', Number(id)).del()
 }
